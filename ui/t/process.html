@@ -1,0 +1,129 @@
+<sca-breadcrumb fluid="true" breads="appconf.breads" active="'process'"></sca-breadcrumb>
+<div class="container">
+    <div class="instance-header">
+        <div ng-if="!editingheader">
+            <button type="button" class="btn btn-xs pull-right editbutton" ng-click="editheader()"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+            <h3>{{instance.name}} <small>Linear Fascicle Evaluation (LiFE)</small></h3>
+            <p class="pull-right text-muted"><time>{{instance.create_date|date:'short'}}</time></p>
+            <p>{{instance.desc}}</p>
+        </div>
+        <div ng-if="editingheader">
+            <div class="form-group">
+                <h4>Workflow Name</h4>
+                <input type="text" class="form-control" ng-model="instance.name" required placeholder="Enter name for this workflow instance."></input>
+                <h4>Description</h4>
+                <textarea class="form-control" ng-model="instance.desc" placeholder="Enter a description for this workflow instance."></textarea>
+                <button class="btn btn-sm" ng-click="updateheader()"><i class="fa fa-check" aria-hidden="true"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="page">
+        <p class="alert alert-warning" ng-if="!best.resource">No resource is available to submit Life service. Please check your resource status.</p>
+        <form ng-submit="submit()" class="form-horizontal">
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Input Raw Image</label>
+                <div class="col-sm-10">
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="input in rawinputs">
+                            <input type="checkbox" ng-model="input.checked"> {{input.filename}} <span class="pull-right">{{input.size|bytes}}</span>
+                        </li>
+                        <li class="list-group-item clickable" ng-click="addinput();" style="background-color: #f0f0f0;">
+                            Select Images
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Calibrations</label>
+                <div class="col-md-3">
+                    <label>Bias</label>
+                    <ul class="list-group">
+                        <!--
+                        <li class="list-group-item" ng-repeat="input in rawinputs">
+                            <input type="checkbox" ng-model="input.checked"> {{input.filename}} <span class="pull-right">{{input.size|bytes}}</span>
+                        </li>
+                        -->
+                        <li class="list-group-item clickable" ng-click="addcalib('bias');" style="background-color: #f0f0f0;">
+                            Select Image
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-md-3">
+                    <label>Dark</label>
+                    <ul class="list-group">
+                        <!--
+                        <li class="list-group-item" ng-repeat="input in rawinputs">
+                            <input type="checkbox" ng-model="input.checked"> {{input.filename}} <span class="pull-right">{{input.size|bytes}}</span>
+                        </li>
+                        -->
+                        <li class="list-group-item clickable" ng-click="addcalib('dark');" style="background-color: #f0f0f0;">
+                            Select Image
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-md-3">
+                    <label>Flat</label>
+                    <ul class="list-group">
+                        <!--
+                        <li class="list-group-item" ng-repeat="input in rawinputs">
+                            <input type="checkbox" ng-model="input.checked"> {{input.filename}} <span class="pull-right">{{input.size|bytes}}</span>
+                        </li>
+                        -->
+                        <li class="list-group-item clickable" ng-click="addcalib('flat');" style="background-color: #f0f0f0;">
+                            Select Image
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Collections</label>
+                <div class="col-sm-10">
+                    <div class="check-box">
+                        <label><input type="checkbox" ng-model="instance.config.wcs"> WCS</label>
+                    </div>
+                    <div class="check-box">
+                        <label><input type="checkbox" ng-model="instance.config.photo">Photometry</label>
+                    </div>
+                    <div class="check-box">
+                        <label><input type="checkbox" ng-model="instance.config.fringe">Fringe</label>
+                    </div>
+                    <div class="check-box">
+                        <label><input type="checkbox" ng-model="instance.config.persistency">Persistency</label>
+                    </div>
+                    <div class="check-box">
+                        <label><input type="checkbox" ng-model="instance.config.nonlinear">Nonlinearity</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!--
+    <h3>Running Jobs</h3>
+    <div class="page">
+        <ul class="list-group">
+            <li class="list-group-item slide-down job" ng-repeat="task in tasks | orderBy:'-update_date'" 
+                ng-if="task.status != 'finished' && task.status != 'failed'"
+                style="background: linear-gradient(to right, #eee {{task.progress.progress*100}}%, white {{task.progress.progress*100}}%);">
+                <ng-include src="'t/task.html'"></ng-include>
+            </li>
+        </ul>
+    </div>
+    -->
+
+</div>
+

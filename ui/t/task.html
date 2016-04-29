@@ -1,0 +1,20 @@
+<b><a href="{{appconf.progress_url}}{{task.progress_key}}" target="{{task.progress_key}}" 
+    ng-if="task.progress" class="pull-right">{{task.progress.progress*100|number:1}}%</a></b>
+<h4><i class="fa fa-spinner fa-pulse" ng-if="task.progress.status == 'running'"></i> {{task.progress.msg || (task.status|uppercase)}}</h4>
+<time class="pull-right">Updated at {{task.update_date|date:'medium'}}</time>
+<!--<time class="pull-right">{{task.create_date|date:'medium'}}</time>-->
+<p>{{task.status_msg}}</p>
+<p>
+    Input Files:
+    <span ng-repeat="file in task.config.files" style="padding-right: 10px;"><i class="fa fa-file-o"></i> {{file.filename}}</span>
+</p>
+<button ng-if="task.resource_id" type="button" class="btn btn-xs pull-right" ng-click="open(task)"><i class="fa fa-cloud-download"></i></button>
+<p>
+    Options:
+    <pre style="font-size: 70%">{{task.config|json}}</pre>
+    <!--
+    <span class="label label-default" ng-if="task.config.all">-all</span>
+    <span class="label label-default" ng-if="task.config.hipposubfields">-hippo-subfields</span>
+    -->
+</p>
+

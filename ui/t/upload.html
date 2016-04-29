@@ -1,0 +1,15 @@
+<!--<sca-menutab menu="appconf.menu" active="'upload'" user="user"></sca-menutab>-->
+<bread instid="instid" breads="appconf.breads" active="'upload'"></bread>
+<div class="container">
+    <h3>Upload Nifti Files</h3>
+    <div class="page">
+        <p>Please upload .nii files you'd like to process.</p>
+        <sca-uploader instid="instance._id" taskid="appconf.upload_task_id" files="files"></sca-uploader>
+        <div class="pull-right">
+            <button type="button" class="btn" ng-click="back()">Back</button>
+            <button type="button" class="btn btn-primary" ng-click="next()">Next</button>
+        </div>
+        <br clear="both">
+    </div>
+</div>
+

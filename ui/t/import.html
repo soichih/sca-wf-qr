@@ -1,0 +1,23 @@
+<!--<sca-menutab menu="appconf.menu" active="'upload'" user="user"></sca-menutab>-->
+<bread instid="instid" breads="appconf.breads" active="'upload'"></bread>
+<div class="container">
+    <h3>Importing Nifti</h3>
+    <div class="page">
+        <p>
+            <i ng-if="progress.status != 'finished'" class="fa fa-spinner fa-pulse"></i>
+            {{progress.msg}}
+        </p>
+        <div ng-if="progress.status == 'failed'">
+            <h3>Oops.. data import failed</h3>
+            <p>Please try refreshing this page, or contact SCA team if the problem persits.</p>
+            <pre>{{progress|json}}</pre>
+        </div>
+
+        <div class="pull-right">
+            <button type="button" class="btn" ng-click="back()">back</button>
+            <!--<button type="button" class="btn btn-primary" ng-click="next()" ng-disabled="progress.status != 'finished'">Next</button>-->
+        </div>
+        <br clear="both">
+    </div>
+</div>
+

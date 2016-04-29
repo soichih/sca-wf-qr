@@ -1,0 +1,36 @@
+<!--<sca-menutab menu="appconf.menu" active="'start'" user="user"></sca-menutab>-->
+<bread instid="instid" breads="appconf.breads" active="'process'"></bread>
+<div class="container">
+    <h3>Files</h3>
+    <div class="page">
+        <sca-files resourceid="task.resource_id" path="path" jwt="jwt"></sca-files>
+        <div class="pull-right">
+            <button type="button" class="btn" ng-click="back()">Back</button>
+        </div>
+        <br clear="both">
+    </div>
+
+    <!--
+    <h3>Old UI</h3>
+    <div class="page">
+        <p ng-if="!files">Loading..</p>
+        <div ng-repeat="file in files">
+            <div ng-if="file.directory">
+                <i class="fa fa-folder"></i> <span>{{file.filename}}</span>
+            </div>
+            <div ng-if="!file.directory">
+                <i class="fa fa-file-o"></i> 
+                <a href="{{appconf.sca_api}}/resource/download?r={{task.resource_id}}&p={{task.instance_id}}/{{task._id}}/{{file.filename}}&at={{jwt}}">
+                    {{file.filename}}
+                </a>
+                {{file|json}}
+            </div>
+        </div>
+        <div class="pull-right">
+            <button type="button" class="btn" ng-click="back()">Back</button>
+        </div>
+        <br clear="both">
+    </div>
+    -->
+</div>
+

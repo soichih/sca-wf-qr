@@ -1,0 +1,6 @@
+<ul class="bread">
+    <li ng-repeat="bread in breads" ng-class="{'bread-active': bread.id == active}" ng-click="click(bread)">
+        <span ng-if="!$first"><i class="fa fa-chevron-right"></i>&nbsp;&nbsp;&nbsp;</span>
+        <b>{{bread.label}}</b>
+    </li>
+</ul>
