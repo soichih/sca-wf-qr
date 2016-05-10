@@ -31,9 +31,9 @@
     "angular-filter": "^0.5.8",
     "angular-gravatar": "^0.4.2",
     "angular-datatables": "^0.5.3",
-    "sca-product-raw": "*",
-    "sca-product-odi": "*",
-    "sca-wf": "*",
+    "sca-product-raw": "soichih/sca-product-raw",
+    "sca-product-odi": "soichih/sca-product-odi",
+    "sca-wf": "soichih/sca-wf",
     "ng-file-upload": "^12.0.4",
     "ui-select": "angular-ui-select#^0.16.1"
   }

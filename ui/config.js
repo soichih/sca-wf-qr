@@ -1,6 +1,8 @@
 angular.module('app.config', [])
 .constant('appconf', {
-    api: '/api/sca-wf-qr',
+
+    //api to query for odi images
+    odi_api: '/api/odi',
 
     //shared servive api and ui urls (for menus and stuff)
     shared_api: '/api/shared',
