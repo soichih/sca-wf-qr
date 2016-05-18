@@ -1,0 +1,71 @@
+<bread instid="instid" breads="appconf.breads" active="'input'"></bread>
+<div class="container">
+    <h3>Search ODI Exposures</h3>
+    <div class="page">
+        <p class="alert alert-warning">Only searching for PROPID:test at server</p>
+        <div class="input-group">
+            <input type="text" class="form-control" ng-model="query" placeholder="Query">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-primary pull-right" ng-click="apply_query()">Search</button>
+            </div>
+        </div>
+        <br>
+        <p ng-if="exps.length == 0" class="help-block">No results</p>
+        <div ng-if="exps.length > 0">
+            <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th><!--check--></th>
+                    <th>Logical ID</th>
+                    <th ng-repeat="head in headers">{{::head}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="exp in exps" ng-class="{'exposure_selected': instance.config.raws[exp._id]}">
+                    <!--<td ng-repeat="head in headers">{{::exp[head]}}</td>-->
+                    <td><input type="checkbox" ng-click="check(exp)" ng-checked="instance.config.raws[exp._id]"></td>
+                    <td>{{exp.logical_id}}</td>
+                    <td ng-repeat="head in headers">{{exp.headers[head]}}</td>
+                </tr>
+            </tbody>
+            </table>
+
+            <ul class="pager">
+              <li>{{curpage * limit + 1}} - {{(curpage+1)*limit}} of {{count}}</li>
+              <li><a href="javascript:void(0)" ng-click="topage(curpage-1);">Previous</a></li>
+              <li><a href="javascript:void(0)" ng-click="topage(curpage+1);">Next</a></li>
+            </ul>
+        </div>
+
+        <div class="pull-right">
+            <button type="button" class="btn" ng-click="back()">Cancel</button>
+            <button type="button" class="btn btn-primary" ng-click="done()">Done</button>
+            <!--<button type="button" class="btn btn-primary" ng-click="next()" ng-disabled="progress.status != 'finished'">Next</button>-->
+        </div>
+        <br clear="both">
+    </div><!--page-->
+
+    <h3>Selected</h3>
+    <div class="page">
+        <div class="row">
+            <div class="col-md-2" ng-repeat="(_id, exp) in instance.config.raws">
+                <div class="thumbnail">
+                    <img src="images/test_thumb.jpg" width="100%">
+                    <div class="caption">
+                        <small>{{exp.logical_id}}</small>
+                        <p>RA:{{exp.headers.RA}} DEC:{{exp.headers.DEC}}</p>
+                        <p>
+                            <button type="button" class="btn btn-danger btn-xs">&times;</button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="pull-right">
+            <button type="button" class="btn btn-primary" ng-click="done()">Done</button>
+        </div>
+        <br clear="both">
+    </div><!--page-->
+
+</div><!--container-->
+

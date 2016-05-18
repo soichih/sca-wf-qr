@@ -16,7 +16,7 @@
     "tests"
   ],
   "dependencies": {
-    "bootstrap": "~3.3.2",
+    "bootstrap": "~3.3.6",
     "angular": "~1.5.5",
     "fontawesome": "*",
     "angular-ui-select": "~0.14.9",

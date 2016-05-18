@@ -55,12 +55,19 @@ app.config(['$routeProvider', 'appconf', function($routeProvider, appconf) {
         controller: 'InputController',
         requiresLogin: true
     })
+    .when('/calib/:instid/:type', {
+        templateUrl: 't/calib.html',
+        controller: 'CalibController',
+        requiresLogin: true
+    })
+
+    /*
     .when('/import/:instid/:taskid', {
         templateUrl: 't/import.html',
         controller: 'ImportController',
         requiresLogin: true
     })
-
+    */
     .when('/tasks/:instid', {
         templateUrl: 't/tasks.html',
         controller: 'TasksController',
@@ -100,16 +107,6 @@ function(appconf, $httpProvider, jwtInterceptorProvider) {
     $httpProvider.interceptors.push('jwtInterceptor');
 }]);
 
-/*
-//just a service to load all users from auth service
-app.factory('serverconf', ['appconf', '$http', 'jwtHelper', function(appconf, $http, jwtHelper) {
-    return $http.get(appconf.api+'/config')
-    .then(function(res) {
-        return res.data;
-    });
-}]);
-*/
-
 app.factory('instance', ['appconf', '$http', 'jwtHelper', 'toaster', 
 function(appconf, $http, jwtHelper, toaster) {
     var _instance = null; //call load()
@@ -127,7 +124,7 @@ function(appconf, $http, jwtHelper, toaster) {
             });
         },
         save: function(instance) {
-            //console.dir(instance);
+            console.dir(instance);
             return $http.put(appconf.sca_api+'/instance/'+instance._id, instance);
         },
         get: function() {
@@ -140,11 +137,13 @@ app.factory('menu', ['appconf', '$http', 'jwtHelper', '$sce', 'scaMessage', 'sca
 function(appconf, $http, jwtHelper, $sce, scaMessage, scaMenu, toaster) {
     var jwt = localStorage.getItem(appconf.jwt_id);
     var menu = {
+        /*
         header: {
             //label: appconf.title,
             //icon: $sce.trustAsHtml("<img src=\""+appconf.icon_url+"\">"),
             //url: "#/",
         },
+        */
         top: scaMenu,
         user: null, //to-be-loaded
         //_profile: null, //to-be-loaded

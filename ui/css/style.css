@@ -10,3 +10,7 @@ body {
   cursor: pointer;
   background-color: #ddd !important;
 }
+tr.exposure_selected {
+  background-color: #1b809e;
+  color: white;
+}

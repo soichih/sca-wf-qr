@@ -1,4 +1,4 @@
-<sca-breadcrumb fluid="true" breads="appconf.breads" active="'process'"></sca-breadcrumb>
+<!--<sca-breadcrumb fluid="true" breads="appconf.breads" active="'process'"></sca-breadcrumb>-->
 <div class="container">
     <div class="instance-header">
         <div ng-if="!editingheader">
@@ -26,8 +26,8 @@
                 <label class="col-sm-2 control-label">Input Raw Image</label>
                 <div class="col-sm-10">
                     <ul class="list-group">
-                        <li class="list-group-item" ng-repeat="input in rawinputs">
-                            <input type="checkbox" ng-model="input.checked"> {{input.filename}} <span class="pull-right">{{input.size|bytes}}</span>
+                        <li class="list-group-item" ng-repeat="(_id, exp) in instance.config.raws">
+                            {{exp.logical_id}} RA:{{exp.headers.RA}} DEC:{{exp.headers.DEC}}
                         </li>
                         <li class="list-group-item clickable" ng-click="addinput();" style="background-color: #f0f0f0;">
                             Select Images
@@ -46,6 +46,10 @@
                             <input type="checkbox" ng-model="input.checked"> {{input.filename}} <span class="pull-right">{{input.size|bytes}}</span>
                         </li>
                         -->
+                        <li class="list-group-item" ng-if="instance.config.bias">
+                            {{instance.config.bias.logical_id}} 
+                            Filter:{{instance.config.bias.headers.FILTER}}
+                        </li>
                         <li class="list-group-item clickable" ng-click="addcalib('bias');" style="background-color: #f0f0f0;">
                             Select Image
                         </li>
@@ -60,6 +64,10 @@
                             <input type="checkbox" ng-model="input.checked"> {{input.filename}} <span class="pull-right">{{input.size|bytes}}</span>
                         </li>
                         -->
+                        <li class="list-group-item" ng-if="instance.config.dark">
+                            {{instance.config.dark.logical_id}} 
+                            Filter:{{instance.config.dark.headers.FILTER}}
+                        </li>
                         <li class="list-group-item clickable" ng-click="addcalib('dark');" style="background-color: #f0f0f0;">
                             Select Image
                         </li>
@@ -67,13 +75,17 @@
                 </div>
 
                 <div class="col-md-3">
-                    <label>Flat</label>
+                    <label>D/F-Flat</label>
                     <ul class="list-group">
                         <!--
                         <li class="list-group-item" ng-repeat="input in rawinputs">
                             <input type="checkbox" ng-model="input.checked"> {{input.filename}} <span class="pull-right">{{input.size|bytes}}</span>
                         </li>
                         -->
+                        <li class="list-group-item" ng-if="instance.config.flat">
+                            {{instance.config.flat.logical_id}} 
+                            Filter:{{instance.config.flat.headers.FILTER}}
+                        </li>
                         <li class="list-group-item clickable" ng-click="addcalib('flat');" style="background-color: #f0f0f0;">
                             Select Image
                         </li>
@@ -111,6 +123,11 @@
             </div>
         </form>
     </div>
+    
+    <button type="button" class="btn btn-default btn-xs" ng-click="debug = !debug">
+        <i class="fa fa-cog" aria-hidden="true"></i>
+    </button>
+    <pre class="slide-down" ng-if="debug">{{instance|json}}</pre>
 
     <!--
     <h3>Running Jobs</h3>

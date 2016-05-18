@@ -24,8 +24,7 @@ angular.module('app.config', [])
     breads: [
         {id: "workflows", label: "Workflows", url:"/sca/#/workflows" },
         {id: "process", label: "Process" },
-        {id: "input", label: "Add Input" },
-        {id: "taskis", label: "Tasks" },
+        {id: "tasks", label: "Tasks" },
     ]
 });
 
