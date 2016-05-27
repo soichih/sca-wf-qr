@@ -1,0 +1,17 @@
+<sca-breadcrumb breads="appconf.breads" active="'tasks'"></sca-breadcrumb>
+<div class="container">
+    <h3>Previously Submitted</h3>
+    <div class="page">
+        <p ng-if="tasks.length == 0" class="text-muted">No task has been submitted</p>
+        <ul class="list-group">
+            <li class="list-group-item slide-down clickable" ng-repeat="task in tasks | orderBy:'-create_date'" ng-click="open(task)">
+                <sca-wf-tasksum task="task">
+                    <!--tranclude a bit more details-->
+                    <pre style="max-height: 200px; overflow: auto;">{{task.config|json}}</pre>
+                </sca-wf-tasksum>
+            </li>
+        </ul>
+    </div>
+</div>
+
+

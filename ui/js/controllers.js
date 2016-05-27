@@ -50,7 +50,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
 
     //make sure user has place to submit the main service (if not.. alert user!)
     $http.get($scope.appconf.sca_api+"/resource/best", {params: {
-        service_id: "sca-service-qr",
+        service: "soichih/sca-service-qr",
     }}).then(function(res) {
         //console.log("best resource");
         //console.dir(res.data);
@@ -87,7 +87,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         //submit sca-service-odi to stage the data
         $http.post($scope.appconf.sca_api+"/task", {
             instance_id: $scope.instance._id,
-            service_id: "sca-product-odi",
+            service: "soichih/sca-product-odi",
             config: {
                 exposures: exps,
                 /*
@@ -118,7 +118,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
             //finally submit!
             $http.post($scope.appconf.sca_api+"/task", {
                 instance_id: $scope.instance._id,
-                service_id: "sca-service-qr",
+                service: "soichih/sca-service-qr",
                 config: qr_config,
                 deps: [odi_task._id],
             })
@@ -363,7 +363,7 @@ function($scope, menu,  scaMessage, toaster, jwtHelper, $http, $location, $route
     $http.get($scope.appconf.sca_api+"/task", {params: {
         where: {
             instance_id: $routeParams.instid,
-            service_id: "sca-service-qr",
+            service: "soichih/sca-service-qr",
         }
     }})
     .then(function(res) {
