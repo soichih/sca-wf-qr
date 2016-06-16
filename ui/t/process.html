@@ -3,7 +3,7 @@
     <div class="instance-header">
         <div ng-if="!editingheader">
             <button type="button" class="btn btn-xs pull-right editbutton" ng-click="editheader()"><i class="fa fa-pencil" aria-hidden="true"></i></button>
-            <h3>{{instance.name}} <small>Linear Fascicle Evaluation (LiFE)</small></h3>
+            <h3>{{instance.name}} <!--<small>Linear Fascicle Evaluation (LiFE)</small>--></h3>
             <p class="pull-right text-muted"><time>{{instance.create_date|date:'short'}}</time></p>
             <p>{{instance.desc}}</p>
         </div>
@@ -19,7 +19,7 @@
     </div>
 
     <div class="page">
-        <p class="alert alert-warning" ng-if="!best.resource">No resource is available to submit Life service. Please check your resource status.</p>
+        <p class="alert alert-warning" ng-if="!best.resource">No resource is available to submit this workflow. Please check your resource status.</p>
         <form ng-submit="submit()" class="form-horizontal">
 
             <div class="form-group">
@@ -100,16 +100,16 @@
                         <label><input type="checkbox" ng-model="instance.config.wcs"> WCS</label>
                     </div>
                     <div class="check-box">
-                        <label><input type="checkbox" ng-model="instance.config.photo">Photometry</label>
+                        <label><input type="checkbox" ng-model="instance.config.photo"> Photometry</label>
                     </div>
                     <div class="check-box">
-                        <label><input type="checkbox" ng-model="instance.config.fringe">Fringe</label>
+                        <label><input type="checkbox" ng-model="instance.config.fringe"> Fringe</label>
                     </div>
                     <div class="check-box">
-                        <label><input type="checkbox" ng-model="instance.config.persistency">Persistency</label>
+                        <label><input type="checkbox" ng-model="instance.config.persistency"> Persistency</label>
                     </div>
                     <div class="check-box">
-                        <label><input type="checkbox" ng-model="instance.config.nonlinear">Nonlinearity</label>
+                        <label><input type="checkbox" ng-model="instance.config.nonlinear"> Nonlinearity</label>
                     </div>
                 </div>
             </div>

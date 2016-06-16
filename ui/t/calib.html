@@ -16,6 +16,7 @@
             <thead>
                 <tr>
                     <th>Logical ID</th>
+                    <th>Type</th>
                     <th ng-repeat="head in headers">{{::head}}</th>
                 </tr>
             </thead>
@@ -23,6 +24,7 @@
                 <tr ng-repeat="exp in exps" ng-class="{'exposure_selected': instance.config.raws[exp._id]}"
                     ng-click="select(exp)" class="clickable">
                     <td>{{exp.logical_id}}</td>
+                    <td>{{exp.type}}</td>
                     <td ng-repeat="head in headers">{{exp.headers[head]}}</td>
                 </tr>
             </tbody>

@@ -132,7 +132,6 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
             if(res.data && res.data.message) toaster.error(res.data.message);
             else toaster.error(res.statusText);
         });
-        
     }
 
     $scope.addinput = function() {
@@ -191,7 +190,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
             find: $scope.find,
             skip: $scope.curpage*$scope.limit,
             limit: $scope.limit,
-            select: 'logical_id headers.OBSLOGIN headers.FILTER headers.PROGID headers.PROPID headers.TELFOCUS headers.NEXTEND headers.AIRMASS headers.ZD headers.DEC headers.RA', //TODO
+            select: 'logical_id type headers.OBSLOGIN headers.FILTER headers.PROGID headers.PROPID headers.TELFOCUS headers.NEXTEND headers.AIRMASS headers.ZD headers.DEC headers.RA', //TODO
         }})
         .then(function(res) {
             //create a list of all headers 
@@ -250,15 +249,16 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     $scope.type = $routeParams.type;//bias, dark or flat
     $scope.curpage = 0;
     $scope.limit = 40;
-    $scope.query = "FILTER:odi_r";
+    //$scope.query = "FILTER:odi_r";
+    $scope.query = "";
 
     $scope.apply_query = function() {
         switch($scope.type) {
         case "flat":
-            $scope.find = {"type": {$in: ["tflat", "dflat"]}}; 
+            $scope.find = {"type": {$in: ["master_tflat", "master_dflat"]}}; 
             break;
         default:
-            $scope.find = {"type": $scope.type}; 
+            $scope.find = {"type": "master_"+$scope.type}; 
         }
 
         var queries = $scope.query.split(" ");
@@ -277,7 +277,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
             find: $scope.find,
             skip: $scope.curpage*$scope.limit,
             limit: $scope.limit,
-            select: 'logical_id headers.OBJECT headers.OBSLOGIN headers.FILTER headers.PROPID headers.PROGID headers.OBSTYPE headers.NEXTEND headers.EXPTIME headers.CAL-OBS', //TODO
+            select: 'logical_id type headers.OBJECT headers.OBSLOGIN headers.FILTER headers.PROPID headers.PROGID headers.OBSTYPE headers.NEXTEND headers.EXPTIME headers.CAL-OBS', //TODO
         }})
         .then(function(res) {
             //create a list of all headers 

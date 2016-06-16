@@ -13,7 +13,6 @@ angular.module('app.config', [])
     auth_url: '/auth',
 
     sca_api: '/api/sca',
-    upload_api: '/api/upload',
 
     progress_api: '/api/progress',
     progress_url: '/progress#/detail/',
