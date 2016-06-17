@@ -15,7 +15,7 @@ angular.module('app.config', [])
     sca_api: '/api/sca',
 
     progress_api: '/api/progress',
-    progress_url: '/progress#/detail/',
+    progress_url: '/progress',
 
     jwt_id: 'jwt',
     upload_task_id: 'upload',
