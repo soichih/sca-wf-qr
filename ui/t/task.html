@@ -24,7 +24,7 @@
         <uib-tabset active="active">
             <uib-tab index="0" heading="Files">
                 <br>
-                <sca-product-raw conf="appconf" taskid="taskid" jwt="jwt"></sca-product-raw>
+                <sca-product-raw conf="appconf" taskid="taskid" jwt="jwt" path_dis="'output'"></sca-product-raw>
                 <small ng-if="resource" class="text-muted">
                     <i class="fa fa-server" aria-hidden="true"></i> {{resource.name}}:{{task._envs.SCA_TASK_DIR}}
                     <!--<span class="text-muted">({{resource.status}})</span>-->

@@ -66,21 +66,26 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
 
         //set default parameters (TODO - not sure if this is the right place to do this)
         if(!$scope.instance.config) $scope.instance.config = {
-            //process: "recon"
+            params: {
+                wcs: true,
+            },
         }
     });
 
     $scope.submit = function() {
         //collect all image ids that we need
         var config = $scope.instance.config;
-        var exps = {};
+        /*
         if(config.dark) exps[config.dark._id] = config.dark.logical_id;
         if(config.flat) exps[config.flat._id] = config.flat.logical_id;
         if(config.bias) exps[config.bias._id] = config.bias.logical_id;
+        */
+        var exps = [];
         if(config.raws) {
             for(var id in config.raws) {
                 var raw = config.raws[id];
-                exps[id] = raw.logical_id;
+                //exps[id] = raw.logical_id;
+                exps.push(id);
             }
         }
         
@@ -89,7 +94,10 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
             instance_id: $scope.instance._id,
             service: "soichih/sca-product-odi",
             config: {
-                exposures: exps,
+                exps: exps,
+                dark: config.dark._id,
+                flat: config.flat._id,
+                bias: config.bias._id,
                 /*
                 odi_api: {
                     url: 'https://soichi7.ppa.iu.edu/api/odi',
@@ -103,23 +111,23 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         .then(function(res) {
             var odi_task = res.data.task;
         
-            //then submit qr service
-            //get rid of unnecessary stuff
+            /*
+            //create config for -qr by getting rid of unnecessary stuff
             var qr_config = angular.copy($scope.instance.config);
-            qr_config.dark = null;
-            if($scope.instance.config.dark) qr_config.dark = $scope.instance.config.dark._id;
-            qr_config.flat = null;
-            if($scope.instance.config.flat) qr_config.flat = $scope.instance.config.flat._id;
-            qr_config.bias= null;
-            if($scope.instance.config.bias) qr_config.bias = $scope.instance.config.bias._id;
-            qr_config.raws = [];
-            for(var id in $scope.instance.config.raws) qr_config.raws.push(id);
+            delete qr_config.dark;
+            delete qr_config.flat;
+            delete qr_config.bias;
+            delete qr_config.raws;
+            */
      
             //finally submit!
             $http.post($scope.appconf.sca_api+"/task", {
                 instance_id: $scope.instance._id,
                 service: "soichih/sca-service-qr",
-                config: qr_config,
+                config: {
+                    input_task_id: odi_task._id, //where we have our input data stored
+                    params: config.params,
+                },
                 deps: [odi_task._id],
             })
             .then(function(res) {
