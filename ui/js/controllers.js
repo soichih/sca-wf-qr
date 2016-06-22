@@ -367,7 +367,7 @@ function($scope, menu,  scaMessage, toaster, jwtHelper, $http, $location, $route
     $http.get($scope.appconf.sca_api+"/task", {params: {
         where: {
             instance_id: $routeParams.instid,
-            service: "soichih/sca-service-qr",
+            service: "soichih/sca-service-fits2png",
         }
     }})
     .then(function(res) {
