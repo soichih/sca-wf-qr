@@ -72,6 +72,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         }
     });
 
+
     $scope.submit = function() {
         //collect all image ids that we need
         var config = $scope.instance.config;
@@ -88,40 +89,23 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
                 exps.push(id);
             }
         }
-        
-        //submit sca-service-odi to stage the data
-        $http.post($scope.appconf.sca_api+"/task", {
-            instance_id: $scope.instance._id,
-            service: "soichih/sca-product-odi",
-            config: {
-                exps: exps,
-                dark: config.dark._id,
-                flat: config.flat._id,
-                bias: config.bias._id,
-                /*
-                odi_api: {
-                    url: 'https://soichi7.ppa.iu.edu/api/odi',
-                    //I should contact auth service to give me a temporarly (short)
-                    //token with smaller set of access
-                    jwt: localStorage.getItem($scope.appconf.jwt_id)
-                }
-                */
-            },
-        })
-        .then(function(res) {
+
+        function submit_stage() {
+            return $http.post($scope.appconf.sca_api+"/task", {
+                instance_id: $scope.instance._id,
+                service: "soichih/sca-product-odi",
+                config: {
+                    exps: exps,
+                    dark: config.dark._id,
+                    flat: config.flat._id,
+                    bias: config.bias._id,
+                },
+            })
+        }
+
+        function submit_qr(res) {
             var odi_task = res.data.task;
-        
-            /*
-            //create config for -qr by getting rid of unnecessary stuff
-            var qr_config = angular.copy($scope.instance.config);
-            delete qr_config.dark;
-            delete qr_config.flat;
-            delete qr_config.bias;
-            delete qr_config.raws;
-            */
-     
-            //finally submit!
-            $http.post($scope.appconf.sca_api+"/task", {
+            return $http.post($scope.appconf.sca_api+"/task", {
                 instance_id: $scope.instance._id,
                 service: "soichih/sca-service-qr",
                 config: {
@@ -130,12 +114,24 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
                 },
                 deps: [odi_task._id],
             })
-            .then(function(res) {
-                $location.path("/task/"+$routeParams.instid+"/"+res.data.task._id);
-            }, function(res) {
-                if(res.data && res.data.message) toaster.error(res.data.message);
-                else toaster.error(res.statusText);
-            });
+        }
+
+        function submit_png(res) {
+            var qr_task = res.data.task;
+            return $http.post($scope.appconf.sca_api+"/task", {
+                instance_id: $scope.instance._id,
+                service: "soichih/sca-service-fits2png",
+                config: {
+                    input_task_id: qr_task._id, //where we have our input data stored
+                },
+                deps: [qr_task._id],
+            })
+        }
+
+        submit_stage().then(submit_qr).then(submit_png)
+        .then(function(res) {
+            var last_task = res.data.task;
+            $location.path("/task/"+$routeParams.instid+"/"+last_task._id);
         }, function(res) {
             if(res.data && res.data.message) toaster.error(res.data.message);
             else toaster.error(res.statusText);

@@ -22,14 +22,16 @@
     <h3>Output Files</h3>
     <div class="page">
         <uib-tabset active="active">
+            <!--
             <uib-tab index="0" heading="Files">
                 <br>
-                <sca-product-raw conf="appconf" taskid="taskid" jwt="jwt" path_dis="'output'"></sca-product-raw>
+                <p ng-if="!task.resource_id">Not yet available</p>
+                <sca-product-raw ng-if="task.resource_id" taskid="taskid" path_dis="'output'"></sca-product-raw>
                 <small ng-if="resource" class="text-muted">
                     <i class="fa fa-server" aria-hidden="true"></i> {{resource.name}}:{{task._envs.SCA_TASK_DIR}}
-                    <!--<span class="text-muted">({{resource.status}})</span>-->
                 </small>
-            </uib-tab>
+            </uib-tab>  
+            -->
             <uib-tab index="1" heading="QR Output">
                 <br>
                 <p class="alert alert-warning">TODO</p>
