@@ -14,7 +14,7 @@ var app = angular.module('app', [
     'ui.gravatar',
 //    'angular.filter',
     'sca-shared',
-    'sca-wf',
+    'sca-ng-wf',
     'sca-product-raw',
     'sca-product-odi',
 ]);
