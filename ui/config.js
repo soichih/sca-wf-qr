@@ -14,7 +14,7 @@ angular.module('app.config', [])
     auth_api: '/api/auth',
     auth_url: '/auth',
 
-    sca_api: '/api/sca',
+    sca_api: '/api/wf',
 
     progress_api: '/api/progress',
     progress_url: '/progress',
