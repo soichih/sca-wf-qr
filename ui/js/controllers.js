@@ -329,9 +329,15 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     $scope.jwt = localStorage.getItem($scope.appconf.jwt_id);
 
     $scope.task = scaTask.get($routeParams.taskid);
+    $scope.task._promise.then(function() {
+        if($scope.task.deps[0]) {
+            $scope.qr_task = scaTask.get($scope.task.deps[0]);
+        }
+    });
 
     $scope.resource = null; //resource where this task is running/ran
 
+    /*
     //need to keep watching until resource_id gets set
     $scope.$watchCollection('task', function(task) {
        //also load resource info
@@ -349,6 +355,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
             });
         }
     });
+    */
 
     $scope.back = function() {
         $location.path("/process/"+$routeParams.instid);
@@ -384,4 +391,62 @@ function($scope, menu,  scaMessage, toaster, jwtHelper, $http, $location, $route
         $location.path("/process/"+$routeParams.instid);
     }
 }]);
+
+app.directive('scaProductDzi', ['toaster', '$http', '$timeout', 'appconf', 'scaTask',
+function(toaster, $http, $timeout, appconf, scaTask) {
+    return {
+        restrict: 'E',
+        scope: {
+            taskid: '=',
+        }, 
+        templateUrl: 't/sca-product-dzi.html',
+        link: function($scope, element) {
+            var jwt = localStorage.getItem(appconf.jwt_id);
+            $scope.task = scaTask.get($scope.taskid);
+            $scope.task._promise.then(function() {
+                var options = {
+                    id: "osd."+$scope.task._id,
+                    prefixUrl: "bower_components/openseadragon/built-openseadragon/openseadragon/images/",
+                    //crossOriginPolicy: 'Anonymous', //needed by plugins to access getImageData()
+
+                    sequenceMode: true,
+                    showReferenceStrip: true,
+                    tileSources: [],
+                };
+
+                $scope.task.products.forEach(function(product) {
+                    if(product.type == "soichih/dzi") {
+                        product.files.forEach(function(file) {
+                            options.tileSources.push(
+                                appconf.data_url+"/"+
+                                $scope.task.instance_id+"/"+
+                                $scope.task._id+"/"+
+                                file.filename);//+"?at="+jwt);
+                        });
+                    }
+                });
+                console.log(JSON.stringify(options, null, 4));
+
+                //TODO - I need to implement authorize api on odi service
+                //and configure data service to trust it
+                //right now, q6's /workflow is all open
+                /*
+                $http({
+                    url: appconf.api+'/authorize',
+                    method: 'POST',
+                    data: {path: $scope.path}
+                }).then(function(res) {
+                    var jwt = res.data.access_token;
+                });
+                */
+
+                //need to initialize after angular had time to apply task update
+                $timeout(function() {
+                    var viewer = OpenSeadragon(options);
+                }, 0);
+            });  
+        }
+    };
+}]);
+
 

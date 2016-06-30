@@ -22,24 +22,21 @@
     <h3>Output Files</h3>
     <div class="page">
         <uib-tabset active="active">
-            <!--
-            <uib-tab index="0" heading="Files">
+            <uib-tab index="0" heading="Preview">
                 <br>
-                <p ng-if="!task.resource_id">Not yet available</p>
-                <sca-product-raw ng-if="task.resource_id" taskid="taskid" path_dis="'output'"></sca-product-raw>
+                <p ng-if="!task.products">Preview not yet available</p>
+                <sca-product-dzi ng-if="task.products" taskid="task._id"></sca-product-dzi>
+            </uib-tab>
+            <uib-tab index="1" heading="FITS">
+                <br>
+                <p ng-if="!qr_task.resource_id">Output not yet available</p>
+                <sca-product-raw ng-if="qr_task.resource_id" taskid="qr_task._id" path="'output'"></sca-product-raw>
+                <!--
                 <small ng-if="resource" class="text-muted">
                     <i class="fa fa-server" aria-hidden="true"></i> {{resource.name}}:{{task._envs.SCA_TASK_DIR}}
                 </small>
-            </uib-tab>  
-            -->
-            <uib-tab index="1" heading="QR Output">
-                <br>
-                <p class="alert alert-warning">TODO</p>
-                <!--
-                <p ng-if="!task.products" class="text-muted">Output graphs not yet generated</p>
-                <sca-product-lifeout conf="appconf" task="task" path="path" jwt="jwt"></sca-product-lifeout>
                 -->
-            </uib-tab>
+            </uib-tab>  
         </uib-tabset>
     </div>
 </div>

@@ -4,6 +4,8 @@ angular.module('app.config', [])
     //api to query for odi images
     odi_api: '/api/odi',
 
+    data_url: 'https://q6.sca.iu.edu/data/workflows',
+
     //shared servive api and ui urls (for menus and stuff)
     shared_api: '/api/shared',
     shared_url: '/shared',
