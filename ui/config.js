@@ -23,7 +23,7 @@ angular.module('app.config', [])
     upload_task_id: 'upload',
 
     breads: [
-        {id: "workflows", label: "Workflows", url:"/sca/#/workflows" },
+        {id: "workflows", label: "Workflows", url:"/wf/#/workflows" },
         {id: "process", label: "Process" },
         {id: "tasks", label: "Tasks" },
     ]
