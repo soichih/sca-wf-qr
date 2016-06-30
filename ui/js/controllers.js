@@ -409,6 +409,17 @@ function(toaster, $http, $timeout, appconf, scaTask) {
                     prefixUrl: "bower_components/openseadragon/built-openseadragon/openseadragon/images/",
                     //crossOriginPolicy: 'Anonymous', //needed by plugins to access getImageData()
 
+                    showNavigator: true,
+                    showRotationControl: true,
+            
+                    //make it a bit more snappy (default 1.2 sec)
+                    animationTime: 0.2,
+
+                    zoomPerScroll: 1.5, //increasing from default 1.2
+            
+                    //TODO - this causes pixel aliasing... I need to disable like jquery-tileviewer
+                    maxZoomPixelRatio: 10,
+
                     sequenceMode: true,
                     showReferenceStrip: true,
                     tileSources: [],
@@ -441,6 +452,7 @@ function(toaster, $http, $timeout, appconf, scaTask) {
                 */
 
                 //need to initialize after angular had time to apply task update
+                //probably won't be necessary once I add a call to resource authorization api
                 $timeout(function() {
                     var viewer = OpenSeadragon(options);
                 }, 0);

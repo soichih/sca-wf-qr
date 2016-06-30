@@ -34,7 +34,7 @@
     "sca-product-raw": "soichih/sca-product-raw",
     "sca-product-odi": "soichih/sca-product-odi",
     "sca-imagex": "soichih/sca-imagex",
-    "sca-wf": "soichih/sca-wf",
+    "sca-ng-wf": "soichih/sca-ng-wf",
     "ng-file-upload": "^12.0.4",
     "ui-select": "angular-ui-select#^0.16.1",
     "openseadragon": "^2.1.0"
