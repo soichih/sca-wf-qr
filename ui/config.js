@@ -14,7 +14,8 @@ angular.module('app.config', [])
     auth_api: '/api/auth',
     auth_url: '/auth',
 
-    sca_api: '/api/wf',
+    sca_api: '/api/wf',//deprecated but still used by some sca-wf shared component
+    wf_api: '/api/wf',
 
     progress_api: '/api/progress',
     progress_url: '/progress',

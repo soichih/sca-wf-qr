@@ -1,7 +1,6 @@
 'use strict';
 
-app.controller('PageController', ['$scope', 'appconf', '$route', 'toaster', '$http', 'jwtHelper', 'menu', '$window', '$anchorScroll', '$routeParams',
-function($scope, appconf, $route, toaster, $http, jwtHelper, menu, $window, $anchorScroll, $routeParams) {
+app.controller('PageController', function($scope, appconf, $route, toaster, $http, jwtHelper, menu, $window, $anchorScroll, $routeParams, instance) {
     $scope.appconf = appconf;
     $scope.title = appconf.title;
     $scope.menu = menu;
@@ -11,14 +10,32 @@ function($scope, appconf, $route, toaster, $http, jwtHelper, menu, $window, $anc
     //this is a crap..
     $scope.reset_urls = function($routeParams) {
         appconf.breads.forEach(function(item) {
-            if(!item.url) item.url = "#/"+item.id+"/"+$routeParams.instid;
+            if(!item.url) item.url = "#/"+item.id;
         });
     }
-}]);
+
+    instance.then(function(_instance) {
+        $scope.instance = _instance;
+    });
+    $scope.save_instance = function(cb) {
+        console.log("saving instance");
+        $http.put($scope.appconf.wf_api+'/instance/'+$scope.instance._id, $scope.instance).then(function(res) {
+            if(cb) cb();
+        }, function(res) {
+            if(res.data && res.data.message) toaster.error(res.data.message);
+            else toaster.error(res.statusText);
+        });
+    }
+
+    $scope.remove_raw = function(id) {
+        delete $scope.instance.config.raws[id];
+        $scope.save_instance();
+    } 
+});
 
 app.controller('StartController', ['$scope', 'toaster', '$http', 'jwtHelper', 'scaMessage', 'instance', '$routeParams', '$location',
 function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location) {
-    $location.path("/process/"+$routeParams.instid).replace();
+    $location.path("/process").replace();
 }]);
 
 app.controller('ImportController', ['$scope', 'toaster', '$http', 'jwtHelper', 'scaMessage', 'instance', '$routeParams', '$location', '$timeout', 'scaTask',
@@ -26,20 +43,22 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     scaMessage.show(toaster);
     $scope.reset_urls($routeParams);
 
-    instance.load($routeParams.instid).then(function(_instance) {
+    /*
+    instance.then(function(_instance) {
         $scope.instance = _instance;
     });
+    */
 
     $scope.taskid = $routeParams.taskid;
 
     $scope.task = scaTask.get($routeParams.taskid);
 
     $scope.$watchCollection('task', function(task) {
-        if(task.status == "finished") $location.path("/process/"+$routeParams.instid);
+        if(task.status == "finished") $location.path("/process");
     });
 
     $scope.back = function() {
-        $location.path("/input/"+$routeParams.instid);
+        $location.path("/input");
     }
 }]);
 
@@ -61,9 +80,12 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     });
 
     //load instance details
-    instance.load($routeParams.instid).then(function(_instance) {
-        $scope.instance = _instance;
+    instance.then(function(_instance) {
+        //$scope.instance = _instance;
 
+        console.log("got from service");
+        console.dir(_instance);
+        //
         //set default parameters (TODO - not sure if this is the right place to do this)
         if(!$scope.instance.config) $scope.instance.config = {
             params: {
@@ -72,15 +94,9 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         }
     });
 
-
     $scope.submit = function() {
         //collect all image ids that we need
         var config = $scope.instance.config;
-        /*
-        if(config.dark) exps[config.dark._id] = config.dark.logical_id;
-        if(config.flat) exps[config.flat._id] = config.flat.logical_id;
-        if(config.bias) exps[config.bias._id] = config.bias.logical_id;
-        */
         var exps = [];
         if(config.raws) {
             for(var id in config.raws) {
@@ -91,7 +107,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         }
 
         function submit_stage() {
-            return $http.post($scope.appconf.sca_api+"/task", {
+            return $http.post($scope.appconf.wf_api+"/task", {
                 instance_id: $scope.instance._id,
                 service: "soichih/sca-product-odi",
                 config: {
@@ -105,7 +121,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
 
         function submit_qr(res) {
             var odi_task = res.data.task;
-            return $http.post($scope.appconf.sca_api+"/task", {
+            return $http.post($scope.appconf.wf_api+"/task", {
                 instance_id: $scope.instance._id,
                 service: "soichih/sca-service-qr",
                 config: {
@@ -118,7 +134,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
 
         function submit_png(res) {
             var qr_task = res.data.task;
-            return $http.post($scope.appconf.sca_api+"/task", {
+            return $http.post($scope.appconf.wf_api+"/task", {
                 instance_id: $scope.instance._id,
                 service: "soichih/sca-service-fits2png",
                 config: {
@@ -131,7 +147,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         submit_stage().then(submit_qr).then(submit_png)
         .then(function(res) {
             var last_task = res.data.task;
-            $location.path("/task/"+$routeParams.instid+"/"+last_task._id);
+            $location.path("/task/"+last_task._id);
         }, function(res) {
             if(res.data && res.data.message) toaster.error(res.data.message);
             else toaster.error(res.statusText);
@@ -139,22 +155,36 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     }
 
     $scope.addinput = function() {
-        $location.path("/input/"+$routeParams.instid);
+        $location.path("/input");
     }
     $scope.addcalib = function(type) {
-        $location.path("/calib/"+$routeParams.instid+"/"+type);
+        $location.path("/calib/"+type);
     }
+
 
     //$scope.editingheader = false;
     $scope.editheader = function() {
         $scope.editingheader = true;
     }
     $scope.updateheader = function() {
+        /*
         instance.save($scope.instance).then(function(_instance) {
             $scope.editingheader = false;
         }, function(res) {
             if(res.data && res.data.message) toaster.error(res.data.message);
             else toaster.error(res.statusText);
+        });
+        */
+        /*
+        $http.put($scope.appconf.wf_api+'/instance/'+$scope.instance._id, $scope.instance).then(function(res) {
+            $scope.editingheader = false;
+        }, function(res) {
+            if(res.data && res.data.message) toaster.error(res.data.message);
+            else toaster.error(res.statusText);
+        });
+        */
+        $scope.save_instance(function() {
+            $scope.editingheader = false;
         });
     }
 
@@ -164,8 +194,8 @@ app.controller('InputController', ['$scope', 'toaster', '$http', 'jwtHelper', 's
 function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location) {
     scaMessage.show(toaster);
     $scope.reset_urls($routeParams);
-    instance.load($routeParams.instid).then(function(_instance) {
-        $scope.instance = _instance;
+    instance.then(function(_instance) {
+        //$scope.instance = _instance;
         if(!$scope.instance.config) $scope.instance.config = {};
         if(!$scope.instance.config.raws) $scope.instance.config.raws = {};
     });
@@ -228,14 +258,20 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     }
 
     $scope.back = function() {
-        $location.path("/process/"+$routeParams.instid);
+        $location.path("/process");
     }
     $scope.done = function() {
-        instance.save($scope.instance).then(function(_instance) {
-            $location.path("/process/"+$routeParams.instid);
+        /*
+        $http.put($scope.appconf.wf_api+'/instance/'+$scope.instance._id, $scope.instance).then(function(res) {
+        //instance.save($scope.instance).then(function(_instance) {
+            $location.path("/process");
         }, function(res) {
             if(res.data && res.data.message) toaster.error(res.data.message);
             else toaster.error(res.statusText);
+        });
+        */
+        $scope.save_instance(function() {
+            $location.path("/process");
         });
     }
 }]);
@@ -244,8 +280,8 @@ app.controller('CalibController', ['$scope', 'toaster', '$http', 'jwtHelper', 's
 function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location) {
     scaMessage.show(toaster);
     $scope.reset_urls($routeParams);
-    instance.load($routeParams.instid).then(function(_instance) {
-        $scope.instance = _instance;
+    instance.then(function(_instance) {
+        //$scope.instance = _instance;
         if(!$scope.instance.config) $scope.instance.config = {};
         if(!$scope.instance.config.raws) $scope.instance.config.raws = {};
     });
@@ -302,11 +338,17 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     $scope.select = function(exp) {
         $scope.instance.config[$scope.type] = exp;
 
-        instance.save($scope.instance).then(function(_instance) {
-            $location.path("/process/"+$routeParams.instid);
+        /*
+        $http.put($scope.appconf.wf_api+'/instance/'+$scope.instance._id, $scope.instance).then(function(res) {
+        //instance.save($scope.instance).then(function(_instance) {
+            $location.path("/process");
         }, function(res) {
             if(res.data && res.data.message) toaster.error(res.data.message);
             else toaster.error(res.statusText);
+        });
+        */
+        $scope.save_instance(function() {
+            $location.path("/process");
         });
     }
     $scope.topage = function(page) {
@@ -316,7 +358,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         search();
     }
     $scope.back = function() {
-        $location.path("/process/"+$routeParams.instid);
+        $location.path("/process");
     }
 }]);
 
@@ -343,7 +385,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
        //also load resource info
         if(task.resource_id && !$scope.resource) {
             $scope.resource = {}; //prevent double loading while I wait response from /resource
-            $http.get($scope.appconf.sca_api+"/resource", {params: {
+            $http.get($scope.appconf.wf_api+"/resource", {params: {
                 where: {_id: task.resource_id}
             }})
             .then(function(res) {
@@ -358,7 +400,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     */
 
     $scope.back = function() {
-        $location.path("/process/"+$routeParams.instid);
+        $location.path("/process");
     }
 }]);
 
@@ -368,7 +410,7 @@ function($scope, menu,  scaMessage, toaster, jwtHelper, $http, $location, $route
     scaMessage.show(toaster);
     $scope.reset_urls($routeParams);
 
-    instance.load($routeParams.instid).then(function(_instance) { $scope.instance = _instance; });
+    //instance.then(function(_instance) { $scope.instance = _instance; });
 
     //load previously submitted tasks
     $http.get($scope.appconf.sca_api+"/task", {params: {
@@ -385,10 +427,10 @@ function($scope, menu,  scaMessage, toaster, jwtHelper, $http, $location, $route
     });
 
     $scope.open = function(task) {
-        $location.path("/task/"+$routeParams.instid+"/"+task._id);
+        $location.path("/task/"+task._id);
     }
     $scope.back = function() {
-        $location.path("/process/"+$routeParams.instid);
+        $location.path("/process");
     }
 }]);
 

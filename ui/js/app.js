@@ -39,44 +39,40 @@ app.animation('.slide-down', ['$animateCss', function($animateCss) {
 //configure route
 app.config(['$routeProvider', 'appconf', function($routeProvider, appconf) {
     $routeProvider
-    .when('/start/:instid', {
+    .when('/start', {
         template: '',
         controller: 'StartController',
         requiresLogin: true
     })
 
-    .when('/process/:instid', {
+    .when('/process', {
         templateUrl: 't/process.html',
         controller: 'ProcessController',
         requiresLogin: true
     })
-    .when('/input/:instid', {
+    .when('/input', {
         templateUrl: 't/input.html',
         controller: 'InputController',
         requiresLogin: true
     })
-    .when('/calib/:instid/:type', {
+    .when('/calib/:type', {
         templateUrl: 't/calib.html',
         controller: 'CalibController',
         requiresLogin: true
     })
 
-    /*
-    .when('/import/:instid/:taskid', {
-        templateUrl: 't/import.html',
-        controller: 'ImportController',
-        requiresLogin: true
-    })
-    */
-    .when('/tasks/:instid', {
+    .when('/tasks', {
         templateUrl: 't/tasks.html',
         controller: 'TasksController',
         requiresLogin: true
     })
-    .when('/task/:instid/:taskid', {
+    .when('/task/:taskid', {
         templateUrl: 't/task.html',
         controller: 'TaskController',
         requiresLogin: true
+    })
+    .otherwise({
+        redirectTo: '/start'
     })
     ;
 }]).run(['$rootScope', '$location', 'toaster', 'jwtHelper', 'appconf', 'scaMessage',
@@ -107,31 +103,48 @@ function(appconf, $httpProvider, jwtInterceptorProvider) {
     $httpProvider.interceptors.push('jwtInterceptor');
 }]);
 
-app.factory('instance', ['appconf', '$http', 'jwtHelper', 'toaster', 
-function(appconf, $http, jwtHelper, toaster) {
-    var _instance = null; //call load()
-    return {
-        load: function(instid) {
-            return $http.get(appconf.sca_api+'/instance/'+instid)
-            .then(function(res) {
-                //console.log("loaded instance");
-                //console.dir(res.data);
-                _instance = res.data;
+app.factory('instance', function(appconf, $http, jwtHelper, toaster) {
+    console.log("getting test instance");
+    var workflow_id = "sca-wf-qr"; //needs to match package.json/name
+    return $http.get(appconf.wf_api+'/instance', {
+        params: {
+            find: { workflow_id: workflow_id }
+        }
+    }).then(function(res) {
+        if(res.data.count != 0) {
+            return res.data.instances[0];
+        } else {
+            console.log("creating new instance");
+            //need to create one
+            return $http.post(appconf.wf_api+"/instance", {
+                workflow_id: workflow_id,
+                name: "test",
+                desc: "singleton",
+                config: {some: "thing"},
+            }).then(function(res) {
+                console.log("created new instance");
                 return res.data;
             }, function(res) {
                 if(res.data && res.data.message) toaster.error(res.data.message);
                 else toaster.error(res.statusText);
             });
-        },
-        save: function(instance) {
-            console.dir(instance);
-            return $http.put(appconf.sca_api+'/instance/'+instance._id, instance);
-        },
-        get: function() {
-            return _instance;
+        }
+    }, function(res) {
+        if(res.data && res.data.message) toaster.error(res.data.message);
+        else toaster.error(res.statusText);
+    });
+
+    /*
+    return {
+        promise: promise,
+        save: function(_instance) {
+            console.log("saving instance");
+            console.dir(_instance);
+            return $http.put(appconf.wf_api+'/instance/'+_instance._id, _instance);
         }
     }
-}]);
+    */
+});
 
 app.factory('menu', ['appconf', '$http', 'jwtHelper', '$sce', 'scaMessage', 'scaMenu', 'toaster',
 function(appconf, $http, jwtHelper, $sce, scaMessage, scaMenu, toaster) {

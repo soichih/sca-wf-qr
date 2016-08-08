@@ -28,6 +28,7 @@
                     <ul class="list-group">
                         <li class="list-group-item" ng-repeat="(_id, exp) in instance.config.raws">
                             {{exp.logical_id}} RA:{{exp.headers.RA}} DEC:{{exp.headers.DEC}}
+                            <button type="button" class="btn btn-danger btn-xs pull-right" ng-click="remove_raw(_id)">&times;</button>
                         </li>
                         <li class="list-group-item clickable" ng-click="addinput();" style="background-color: #f0f0f0;">
                             Select Images

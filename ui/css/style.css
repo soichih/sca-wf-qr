@@ -1,6 +1,7 @@
 body {
   background-color: #eee;
 }
+.container-fluid .page,
 .container .page {
   background-color: white;
   box-shadow: 0 0 5px #ccc;
