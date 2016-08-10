@@ -211,7 +211,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         queries.forEach(function(query) {
             var tokens = query.split(":");
             var key = "headers."+tokens[0];
-            if(tokens.length == 2) $scope.find[key] = tokens[1]; 
+            if(tokens.length == 2) $scope.find[key] = {$regex: tokens[1], $options: 'ix'}; 
         });
         $scope.curpage = 0;
         search();
@@ -219,7 +219,8 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     $scope.apply_query();
     
     function search() {
-        //console.dir($scope.find);
+        console.log("sending find query");
+        console.dir($scope.find);
         $http.get($scope.appconf.odi_api+"/exposures", {params: {
             find: $scope.find,
             skip: $scope.curpage*$scope.limit,
@@ -305,7 +306,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         queries.forEach(function(query) {
             var tokens = query.split(":");
             var key = "headers."+tokens[0];
-            if(tokens.length == 2) $scope.find[key] = tokens[1]; 
+            if(tokens.length == 2) $scope.find[key] = {$regex: tokens[1], $options: 'ix'}; 
         });
         $scope.curpage = 0;
         search();
@@ -313,6 +314,8 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     $scope.apply_query();
     
     function search() {
+        console.log("sending find query");
+        console.dir($scope.find);
         $http.get($scope.appconf.odi_api+"/exposures", {params: {
             find: $scope.find,
             skip: $scope.curpage*$scope.limit,
