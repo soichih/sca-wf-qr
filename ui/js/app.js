@@ -17,6 +17,7 @@ var app = angular.module('app', [
     'sca-ng-wf',
     'sca-product-raw',
     'sca-product-odi',
+    'yaru22.angular-timeago'
 ]);
 
 //show loading bar at the page top
